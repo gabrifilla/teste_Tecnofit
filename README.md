@@ -12,6 +12,9 @@
 
 :small_blue_diamond: [Como rodar a aplicação](#configuração)
 
+:small_blue_diamond: [Testes](#testes)
+
+:small_blue_diamond: [Outros](#outros)
 
 ## Descrição do projeto
 
@@ -44,3 +47,43 @@
   docker compose up -d --build
   ```
 4. Acesse a aplicação em `http://localhost`
+
+Ao fazer a inicialização do projeto, conta padrão de acesso será:
+
+username: admin
+senha: admin
+
+e
+
+username: user
+senha: user
+
+*Necessário fazer login para entrar na dashboard, onde o Ranking(pontuação) fica.* *
+
+## Endpoints
+
+### `GET e POST /login`
+Envia e recebe as informações do usuário e carrega a página de dashboard caso sucesso.
+
+### `/logout`
+Desconecta o usuário, fazendo retornar para a página de login.
+
+### `GET e POST /register`
+Recebe as informações de cadastro de usuário e faz o cadastro.
+
+### `/dashboard`
+Página inicial com as informações de média do periodo selecionado e o gráfico de apresentação.
+
+### `GET /ranking`
+Busca as informações no banco de acordo com o movimento especificado.
+
+**Payload exemplo:**
+```json
+{
+
+}
+```
+
+## Testes
+
+## Outros
