@@ -32,8 +32,8 @@ O objetivo é permitir que a aplicação seja facilmente configurada e executada
 - **Login/Logout:** Fluxos separados para API (token) e Web (sessão).
 - **Cadastro de Usuário:** Registro de novos usuários.
 - **Redefinição de Senha:** Permite a recuperação da senha do usuário.
-- **Ranking:** Exibição dos rankings conforme o "movement" consultado.
-- **Dashboard:** Visualização da pontuação e gráficos (na interface web).
+- **Ranking:** Exibição dos rankings conforme o movimento especificado.
+- **Dashboard:** Visualização da pontuação (na interface web).
 
 ---
 
@@ -41,7 +41,7 @@ O objetivo é permitir que a aplicação seja facilmente configurada e executada
 
 - [PHP 8.1](https://windows.php.net/download#php-8.1)
 - [MySQL](https://www.mysql.com/downloads/)
-- [Docker](https://docs.docker.com/get-docker/) (opcional, para utilizar o docker-compose)
+- [Docker](https://docs.docker.com/get-docker/)
 - [Composer](https://getcomposer.org/)
 
 ---
