@@ -11,17 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('record_pessoal', function (Blueprint $table) {
+        Schema::create('personal_records', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('usu_id');
-            $table->unsignedInteger('movimento_id');
-            $table->float('valor');
-            $table->dateTime('data');
+            $table->unsignedInteger('move_id');
+            $table->float('value');
+            $table->dateTime('date');
             $table->timestamps();
     
             // Definindo as foreign keys
-            $table->foreign('usu_id')->references('id')->on('usuarios')->onDelete('cascade');
-            $table->foreign('movimento_id')->references('id')->on('movimento')->onDelete('cascade');
+            $table->foreign('usu_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('move_id')->references('id')->on('movements')->onDelete('cascade');
         });
     }
 
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('record_pessoal');
+        Schema::dropIfExists('personal_records');
     }
 };

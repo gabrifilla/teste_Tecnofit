@@ -5,14 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Movimento extends Model
+class Movement extends Model
 {
-    protected $table = 'movimento';
+    protected $table = 'movements';
 
-    protected $fillable = ['nome'];
+    protected $fillable = ['name'];
 
     public function recordsPessoais()
     {
-        return $this->hasMany(RecordPessoal::class, 'movimento_id');
+        return $this->hasMany(PersonalRecord::class, 'move_id');
     }
 }

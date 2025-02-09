@@ -15,34 +15,79 @@ class AuthController extends Controller
         $this->loginService = $loginService;
     }
 
+    
     public function showLogin()
     {
         return view('auth.login');
     }
 
-    public function login(Request $request)
+    public function loginWeb(Request $request)
     {
-        $credentials = $request->validate([
-            'email' => 'required|string|email',
-            'password' => 'required|string'
-        ]);
+        try {
+            $credentials = $request->validate([
+                'email'    => 'required|string|email',
+                'password' => 'required|string'
+            ]);
 
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-            return redirect()->route('records.index');
+            if (Auth::attempt($credentials)) {
+                $request->session()->regenerate();
+                return redirect()->route('records.index');
+            }
+
+            return back()->withErrors(['email' => 'Email ou senha inválidos'])->withInput();
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'Erro ao efetuar login: ' . $e->getMessage()]);
         }
-
-        return back()->withErrors(['email' => 'Email ou senha inválidos'])->withInput();
     }
 
-    public function logout(Request $request)
+    public function loginApi(Request $request)
     {
-        Auth::logout();
+        try {
+            $credentials = $request->validate([
+                'email'    => 'required|string|email',
+                'password' => 'required|string'
+            ]);
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+            if (Auth::attempt($credentials)) {
+                $user = Auth::user();
+                // Gera o token utilizando o Sanctum (certifique-se de que o modelo User utiliza o HasApiTokens)
+                $token = $user->createToken('YourAppName')->plainTextToken;
 
-        return redirect()->route('login');
+                return response()->json([
+                    'message' => 'Login sucedido',
+                    'token'   => $token
+                ], 200);
+            }
+
+            return response()->json(['message' => 'Email ou senha inválidos'], 401);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Erro no login: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function logoutWeb(Request $request)
+    {
+        try {
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            return redirect()->route('login');
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'Erro ao efetuar logout: ' . $e->getMessage()]);
+        }
+    }
+
+    public function logoutApi(Request $request)
+    {
+        try {
+            $user = Auth::user();
+            if ($user) {
+                $user->tokens()->delete();
+            }
+            return response()->json(['message' => 'Logout sucedido'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Erro ao efetuar logout: ' . $e->getMessage()], 500);
+        }
     }
 
     public function showRegister()
@@ -52,17 +97,20 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|string|email|unique:users',
-            'password' => 'required|string|min:6|confirmed'
-        ]);
+        try {
+            $request->validate([
+                'name'     => 'required|string',
+                'email'    => 'required|string|email|unique:users',
+                'password' => 'required|string|min:6|confirmed'
+            ]);
 
-        $user = $this->loginService->register($request->all());
+            $user = $this->loginService->register($request->all());
+            Auth::login($user);
 
-        Auth::login($user);
-
-        return redirect()->route('records.index');
+            return redirect()->route('records.index');
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'Erro no registro: ' . $e->getMessage()]);
+        }
     }
 
     public function showResetPassword()
@@ -72,13 +120,16 @@ class AuthController extends Controller
 
     public function resetPassword(Request $request)
     {
-        $request->validate([
-            'email' => 'required|string|email|exists:users,email',
-            'password' => 'required|string|min:6|confirmed'
-        ]);
+        try {
+            $request->validate([
+                'email'    => 'required|string|email|exists:users,email',
+                'password' => 'required|string|min:6|confirmed'
+            ]);
 
-        $this->loginService->resetPassword($request->email, $request->password);
-
-        return redirect()->route('login')->with('success', 'Senha redefinida com sucesso!');
+            $this->loginService->resetPassword($request->email, $request->password);
+            return redirect()->route('login')->with('success', 'Senha redefinida com sucesso!');
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'Erro na redefinição de senha: ' . $e->getMessage()]);
+        }
     }
 }

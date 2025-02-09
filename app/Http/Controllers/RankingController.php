@@ -17,24 +17,32 @@ class RankingController extends Controller
 
     public function ranking($movementId)
     {
-        $ranking = $this->rankingService->getRanking($movementId);
-
-        if (!$ranking) {
-            return response()->json(['message' => 'Movimento não foi encontrado'], 404);
+        try {
+            $ranking = $this->rankingService->getRanking($movementId);
+            if (!$ranking) {
+                return response()->json(['message' => 'Movimento não foi encontrado'], 404);
+            }
+            return response()->json($ranking);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Erro ao recuperar ranking: ' . $e->getMessage()
+            ], 500);
         }
-
-        return response()->json($ranking);
     }
 
-    public function showRecords()
+    public function showRecords(Request $request)
     {
-        $movementId = 1;
-        $records = $this->rankingService->getRanking($movementId);
-
-        if (!$records) {
-            return redirect()->route('records.index')->with('error', 'Nenhum recorde encontrado.');
+        try {
+            $movementId = $request->query('movementId', 1);
+            $records = $this->rankingService->getRanking($movementId);
+            if (!$records) {
+                return redirect()->route('records.index', ['movementId' => 1])
+                                 ->with('error', 'Nenhum recorde foi encontrado.');
+            }
+            return view('records.index', compact('records', 'movementId'));
+        } catch (\Exception $e) {
+            return redirect()->route('records.index')
+                             ->with('error', 'Erro ao buscar recordes: ' . $e->getMessage());
         }
-
-        return view('records.index', compact('records'));
     }
 }

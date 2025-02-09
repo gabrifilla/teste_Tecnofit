@@ -2,13 +2,13 @@
 
 namespace App\Repositories\Interfaces;
 
-use App\Models\Usuario;
+use App\Models\User;
 
 interface UserRepositoryInterface
 {
-    public function create(array $data): Usuario;
-    public function findByUser(string $username): ?Usuario;
-    public function findByEmail(string $email): ?Usuario;
+    public function create(array $data): User;
+    public function findByUser(string $username): ?User;
+    public function findByEmail(string $email): ?User;
     public function revokeToken(string $token): void;
     public function saveTokenExpiration(string $token, $expiration): void;
     public function deleteUserById(int $id): void;

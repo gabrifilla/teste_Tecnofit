@@ -2,29 +2,29 @@
 
 namespace App\Repositories\Eloquent;
 
-use App\Models\Usuario;
+use App\Models\User;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 
 class UserRepository implements UserRepositoryInterface
 {
-    public function create(array $data): Usuario
+    public function create(array $data): User
     {
-        return Usuario::create([
-            'nome' => $data['name'],
+        return User::create([
+            'name' => $data['name'],
             'email' => $data['email'],
-            'senha' => bcrypt($data['password']),
+            'password' => bcrypt($data['password']),
         ]);
     }
 
-    public function findByUser(string $username): ?Usuario
+    public function findByUser(string $username): ?User
     {
-        return Usuario::where('email', $username)->orWhere('nome', $username)->first();
+        return User::where('email', $username)->orWhere('name', $username)->first();
     }
 
-    public function findByEmail(string $email): ?Usuario
+    public function findByEmail(string $email): ?User
     {
-        return Usuario::where('email', $email)->first();
+        return User::where('email', $email)->first();
     }
 
     public function revokeToken(string $token): void
@@ -43,6 +43,6 @@ class UserRepository implements UserRepositoryInterface
 
     public function deleteUserById(int $id): void
     {
-        Usuario::where('id', $id)->delete();
+        User::where('id', $id)->delete();
     }
 }

@@ -1,4 +1,3 @@
-<!-- resources/views/auth/login.blade.php -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -30,6 +29,8 @@
                     </div>
 
                     <button type="submit" class="btn btn-primary w-100">Entrar</button>
+                    <p class="mt-2 text-center"><a href="{{ route('register') }}">Cadastrar</a></p>
+
                 </form>
             </div>
         </div>

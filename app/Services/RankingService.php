@@ -26,8 +26,8 @@ class RankingService
         $ranking = $this->rankingRepository->getRankingByMovementId($movementId);
 
         return [
-            'movimento' => $movement->nome,
-            'ranking' => $ranking
+            'movement' => $movement->name,
+            'ranking' => !empty($ranking) ? $ranking : "Não possui ninguém no ranking ainda."
         ];
     }
 }

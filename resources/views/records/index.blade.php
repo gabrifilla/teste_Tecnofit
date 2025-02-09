@@ -14,6 +14,14 @@
         @if(session('error'))
             <div class="alert alert-danger">{{ session('error') }}</div>
         @endif
+        <form method="GET" action="{{ route('records.index') }}" class="mb-3">
+            <label for="movement">Escolha um movimento:</label>
+            <select name="movementId" id="movement" class="form-control" onchange="this.form.submit()">
+                <option value="1" {{ request('movementId') == 1 ? 'selected' : '' }}>Deadlift</option>
+                <option value="2" {{ request('movementId') == 2 ? 'selected' : '' }}>Black Squat</option>
+                <option value="3" {{ request('movementId') == 3 ? 'selected' : '' }}>Bench Press</option>
+            </select>
+        </form>
 
         <table class="table table-bordered table-striped mt-4">
             <thead class="table-dark">
@@ -27,17 +35,17 @@
             <tbody>
                 @foreach($records['ranking'] as $index => $record)
                     <tr>
-                        <td>{{ $record->position }}</td>
-                        <td>{{ $record->user_name }}</td>
+                        <td>{{ $record->posicao }}º lugar</td>
+                        <td>{{ $record->name }}</td>
                         <td>{{ $record->max_value }} kg</td>
-                        <td>{{ \Carbon\Carbon::parse($record->record_date)->format('d/m/Y') }}</td>
+                        <td>{{ \Carbon\Carbon::parse($record->date)->format('d/m/Y') }}</td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
 
         <div class="text-center">
-            <a href="/" class="btn btn-primary">Voltar</a>
+            <a href="{{ route('login') }}" class="btn btn-primary">Logout</a>
         </div>
     </div>
 

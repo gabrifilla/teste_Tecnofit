@@ -9,17 +9,18 @@ class RankingRepository implements RankingRepositoryInterface
 {
     public function getRankingByMovementId($movementId)
     {
-        return DB::table('record_pessoal')
-            ->join('usuario', 'record_pessoal.usu_id', '=', 'usuario.id')
+        return DB::table('personal_records')
+            ->join('users', 'personal_records.usu_id', '=', 'users.id')
             ->select(
-                'usuario.id as usu_id',
-                'usuario.nome as nome',
-                DB::raw('MAX(record_pessoal.value) as valor_max'),
-                DB::raw('MIN(record_pessoal.date) as data')
+                'users.id as usu_id',
+                'users.name as name',
+                DB::raw('MAX(personal_records.value) as max_value'),
+                DB::raw('MIN(personal_records.date) as date'),
+                DB::raw('DENSE_RANK() OVER (ORDER BY MAX(personal_records.value) DESC) as posicao')
             )
-            ->where('record_pessoal.movimento_id', $movementId)
-            ->groupBy('usuario.id', 'usuario.nome')
-            ->orderByDesc('valor_max')
-            ->get()->limit(10);
+            ->where('personal_records.move_id', $movementId)
+            ->groupBy('users.id', 'users.name')
+            ->orderByDesc('max_value')
+            ->get();
     }
 }
